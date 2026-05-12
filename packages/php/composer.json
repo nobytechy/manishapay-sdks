@@ -12,10 +12,28 @@
     "ext-curl": "*",
     "ext-json": "*"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^9.6 || ^10.5"
+  },
   "autoload": {
     "psr-4": {
       "ManishaPay\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ManishaPay\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "support": {
+    "issues": "https://github.com/nobytechy/manishapay-sdks/issues",
+    "source": "https://github.com/nobytechy/manishapay-sdks/tree/main/packages/php"
   },
   "homepage": "https://pay.aizim.co.zw"
 }

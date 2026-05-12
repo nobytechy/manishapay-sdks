@@ -30,3 +30,41 @@ jobs:
       - name: Run tests
         working-directory: packages/nodejs
         run: npm test
+
+  php:
+    name: PHP ${{ matrix.php-version }} — packages/php
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['7.4', '8.0', '8.1', '8.2', '8.3']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: curl, json
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        working-directory: packages/php
+        run: composer validate --strict --no-check-publish
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: packages/php/vendor
+          key: php-${{ matrix.php-version }}-composer-${{ hashFiles('packages/php/composer.json') }}
+          restore-keys: php-${{ matrix.php-version }}-composer-
+
+      - name: Install dependencies
+        working-directory: packages/php
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHPUnit
+        working-directory: packages/php
+        run: ./vendor/bin/phpunit --testdox
